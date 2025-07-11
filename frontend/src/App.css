@@ -1,0 +1,94 @@
+/* Reset default margin/padding and force full black background */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+/* App wrapper */
+.app-container {
+  padding-top: 80px;
+  min-height: 100vh;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  z-index: 100;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.navbar button {
+  background-color: #000000;
+  border: 1px solid #4caf50;
+  color: #4caf50;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.navbar .login-btn {
+  margin-left: 10px;
+}
+
+.navbar button:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  padding: 30px;
+  background-color: #000000;
+}
+
+.hero-text {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px 4px #4caf50;
+  max-width: 900px;
+  text-align: center;
+}
+
+.hero-text h2,
+.hero-text h1,
+.hero-text p {
+  color: #4caf50;
+}

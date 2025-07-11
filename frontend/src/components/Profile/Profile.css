@@ -1,0 +1,83 @@
+/* src/Components/Profile1.css */
+
+.profile-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("https://images.unsplash.com/photo-1584467735871-bc17b739d4ec") no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 320px;
+  text-align: center;
+  color: black;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 22px;
+  margin: 5px 0;
+  font-weight: 600;
+  color: black;
+}
+
+.useremail {
+  font-size: 14px;
+  color: black;
+  margin-bottom: 20px;
+}
+
+.profile-details {
+  margin: 20px 0;
+  text-align: left;
+  font-size: 15px;
+  color: black;
+}
+
+.profile-details p {
+  margin: 6px 0;
+}
+
+.edit-button,
+.logout-button {
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.edit-button {
+  background: rgba(0, 123, 255, 0.8);
+}
+
+.edit-button:hover {
+  background: rgba(0, 123, 255, 1);
+}
+
+.logout-button {
+  background: rgba(220, 53, 69, 0.9);
+}
+
+.logout-button:hover {
+  background: rgba(220, 53, 69, 1);
+}
+

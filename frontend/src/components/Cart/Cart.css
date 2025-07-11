@@ -1,0 +1,235 @@
+.order-confirmation {
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px dashed #2e7d32;
+  background-color: #f0fff4;
+  border-radius: 8px;
+}
+
+.order-confirmation h3 {
+  color: #2e7d32;
+}
+
+.order-confirmation ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.order-confirmation li {
+  margin: 6px 0;
+}
+/* Main cart container */
+.cart-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Cart heading */
+.cart-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+/* When cart is empty */
+.empty-cart {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  margin-top: 40px;
+}
+
+/* Cart item list */
+.cart-list {
+  border-top: 1px solid #ccc;
+}
+
+/* Each cart item */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.item-details h3 {
+  margin: 0;
+  color: #333;
+}
+
+.item-details p {
+  margin: 5px 0;
+  color: #555;
+}
+
+/* Remove button */
+.remove-btn {
+  padding: 8px 12px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background-color: #b71c1c;
+}
+
+/* Order Summary Section */
+.cart-summary {
+  text-align: right;
+  margin-top: 20px;
+}
+
+/* Place Order Button */
+.place-order-btn {
+  padding: 10px 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.place-order-btn:hover {
+  background-color: #1b5e20;
+}
+
+/* Order Confirmation Box */
+.order-confirmation {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f0fff4;
+  border: 2px dashed #2e7d32;
+  border-radius: 8px;
+}
+
+.order-confirmation h3 {
+  color: #2e7d32;
+  margin-bottom: 10px;
+}
+
+.order-confirmation ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.order-confirmation li {
+  margin: 6px 0;
+  color: #333;
+}
+
+.order-confirmation h4 {
+  margin-top: 15px;
+  color: #2e7d32;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.cart-table th,
+.cart-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.cart-table th {
+  background-color: #f0f0f0;
+  color: #2e7d32;
+}
+
+.cart-table td {
+  color: #333;
+}
+
+/* Background image for the page or cart container */
+
+
+.cart-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.85); /* semi-transparent white bg */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.cart-container h2 {
+  text-align: center;
+  color: #2e7d32;
+}
+
+/* Cart table styling */
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.cart-table th,
+.cart-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9); /* ensures cell background */
+}
+
+.cart-table th {
+  background-color: rgba(46, 125, 50, 0.9); /* green header */
+  color: white;
+}
+
+.cart-table td {
+  color: #333;
+}
+
+/* Buttons */
+.remove-btn {
+  padding: 6px 12px;
+  background-color: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background-color: #b71c1c;
+}
+
+.place-order-btn {
+  padding: 10px 20px;
+  background-color: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.place-order-btn:hover {
+  background-color: #1b5e20;
+}
+
+.cart-summary {
+  text-align: right;
+  margin-top: 20px;
+}
+
+/* Order confirmation */
+.order-confirmation {
+  background-color: rgba(240, 255, 244, 0.95);
+  padding: 20px;
+  border: 2px dashed #2e7d32;
+  border-radius: 8px;
+  margin-top: 20px;
+}
