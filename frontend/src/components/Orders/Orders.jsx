@@ -8,10 +8,13 @@ const Orders = () => {
   const [error, setError] = useState('');
   const [cancellingOrder, setCancellingOrder] = useState(null);
 
-  const token = localStorage.getItem('access_token');
+  const token =
+    localStorage.getItem('customer_access_token') ||
+    localStorage.getItem('access_token') ||
+    '';
+
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  // Status display mapping to match admin panel
   const statusDisplayMap = {
     'PLACED': 'Placed',
     'CONFIRMED': 'Confirmed',
@@ -28,80 +31,69 @@ const Orders = () => {
   };
 
   const fetchOrders = async () => {
-    setError('');
-    setLoading(true);
-    
-    try {
-      const res = await axios.get('http://localhost:8000/api/orders/', axiosConfig);
-      const apiOrders = res.data.results || [];
-      console.log('✅ API Orders:', apiOrders);
+  setLoading(true);
+  setError('');
 
-      let localOrders = [];
-      if (user?.email) {
-        const localKey = `orderHistory_${user.email}`;
-        const stored = localStorage.getItem(localKey);
-        if (stored) {
-          try {
-            localOrders = JSON.parse(stored);
-            console.log('📦 Local Orders:', localOrders);
-          } catch (parseErr) {
-            console.warn('⚠️ Failed to parse local orders:', parseErr);
-          }
-        }
+  try {
+    /* 1️⃣ fetch from API */
+    const { data } = await axios.get(
+      'http://localhost:8000/api/orders/',
+      axiosConfig
+    );
+    const apiOrders = data.results ?? data;          // always an array
+
+    /* 2️⃣ pull _unsaved_ local orders only (ones that have no id yet) */
+    let unsavedLocal = [];
+    if (user?.email) {
+      const localKey = `orderHistory_${user.email}`;
+      const raw = localStorage.getItem(localKey);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          unsavedLocal = parsed.filter(o => !o.id);  // keep the id-less ones
+        } catch { /* ignore parse error */ }
       }
-
-      // Combine orders, prioritizing API orders over local ones
-      const combinedOrders = [...apiOrders, ...localOrders];
-      
-      // Remove duplicates based on order ID (API orders take precedence)
-      const uniqueOrders = combinedOrders.filter((order, index, self) => 
-        index === self.findIndex(o => o.id === order.id)
-      );
-      
-      console.log('🔄 Combined Orders:', uniqueOrders);
-      setOrders(uniqueOrders);
-    } catch (err) {
-      console.error('❌ Failed to fetch orders:', err);
-      setError('Failed to load order history.');
-    } finally {
-      setLoading(false);
     }
-  };
 
+    /* 3️⃣ final list = authoritative API orders + any drafts */
+    setOrders([...apiOrders, ...unsavedLocal]);
+  } catch (e) {
+    console.error(e);
+    setError('Failed to load order history.');
+  } finally {
+    setLoading(false);
+  }
+};
   const handleCancelOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to cancel this order?')) {
-      return;
-    }
+    if (!window.confirm('Are you sure you want to cancel this order?')) return;
 
     setCancellingOrder(orderId);
-    
+
     try {
       const response = await axios.post(
         `http://localhost:8000/api/orders/${orderId}/cancel/`,
         {},
         axiosConfig
       );
-      
-      console.log('✅ Order cancelled successfully:', response.data);
-      
-      // Update the order status in the local state
-      setOrders(prevOrders => 
-        prevOrders.map(order => 
-          order.id === orderId 
+
+      // Update UI
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderId
             ? { ...order, status: 'CANCELLED' }
             : order
         )
       );
-      
-      // Also update local storage if the order exists there
+
+      // Also update localStorage
       if (user?.email) {
         const localKey = `orderHistory_${user.email}`;
         const stored = localStorage.getItem(localKey);
         if (stored) {
           try {
             const localOrders = JSON.parse(stored);
-            const updatedLocalOrders = localOrders.map(order => 
-              order.id === orderId 
+            const updatedLocalOrders = localOrders.map(order =>
+              order.id === orderId
                 ? { ...order, status: 'CANCELLED' }
                 : order
             );
@@ -111,32 +103,36 @@ const Orders = () => {
           }
         }
       }
-      
+
       alert('Order cancelled successfully!');
     } catch (err) {
       console.error('❌ Failed to cancel order:', err);
-      const errorMessage = err.response?.data?.error || 
-                          err.response?.data?.message || 
-                          'Failed to cancel order. Please try again.';
+      const errorMessage = err.response?.data?.error ||
+        err.response?.data?.message ||
+        'Failed to cancel order. Please try again.';
       alert(errorMessage);
     } finally {
       setCancellingOrder(null);
     }
   };
 
-  // Check if order can be cancelled
   const canCancelOrder = (order) => {
-    // Can cancel if order has an ID (not just local) and is not already cancelled or delivered
     return order.id && !['CANCELLED', 'DELIVERED'].includes(order.status);
   };
 
-  // Auto-refresh orders every 30 seconds to get latest status
   useEffect(() => {
     fetchOrders();
-    
-    const interval = setInterval(fetchOrders, 30000); // Refresh every 30 seconds
+    const interval = setInterval(fetchOrders, 30000);
     return () => clearInterval(interval);
   }, []);
+  /* instant refresh whenever any tab writes to orders_bump */
+useEffect(() => {
+  const handler = e => {
+    if (e.key === 'orders_bump') fetchOrders();
+  };
+  window.addEventListener('storage', handler);
+  return () => window.removeEventListener('storage', handler);
+}, []);
 
   const formatDate = (dateString) => {
     try {
@@ -156,8 +152,8 @@ const Orders = () => {
     <div className="orders-container">
       <h2 className="orders-title">
         Order History
-        <button 
-          onClick={fetchOrders} 
+        <button
+          onClick={fetchOrders}
           className="refresh-btn"
           style={{
             marginLeft: '20px',
@@ -200,7 +196,6 @@ const Orders = () => {
             <tbody>
               {orders.map((order, index) => {
                 const orderTime = formatDate(order.created_at || order.time);
-
                 const items = (order.items || []).map((item) => {
                   const name =
                     item.menu_item_name ||
@@ -208,18 +203,18 @@ const Orders = () => {
                     item.menu_item?.name ||
                     `Item #${item.menu_item?.id || 'N/A'}`;
                   const quantity = item.quantity || 1;
-                  const price = parseFloat(
+                  const price = Number(
                     item.price ?? item.menu_item_price ?? item.menu_item?.price ?? 0
-                  );
+                  ) || 0;
+
                   return {
                     name,
                     quantity,
-                    price,
-                    subtotal: price * quantity,
+                    price
                   };
                 });
 
-                const total = parseFloat(order.total || order.total_amount || 0).toFixed(2);
+                const total = Number(order.total || order.total_amount || 0).toFixed(2);
                 const orderId = order.orderId || order.id;
                 const orderStatus = order.status || 'PLACED';
 
@@ -236,7 +231,8 @@ const Orders = () => {
                       <ul className="order-items-list">
                         {items.map((item, idx) => (
                           <li key={idx}>
-                            {item.name} × {item.quantity} = ₹{item.subtotal.toFixed(2)}
+                            {item.name} × {item.quantity} = ₹
+                            {(item.price * item.quantity).toFixed(2)}
                           </li>
                         ))}
                       </ul>
@@ -261,14 +257,13 @@ const Orders = () => {
                         </button>
                       ) : (
                         <span className="no-action" style={{ color: '#666' }}>
-                          {orderStatus === 'CANCELLED' 
-                            ? 'Cancelled' 
-                            : orderStatus === 'DELIVERED' 
-                              ? 'Delivered' 
-                              : !order.id 
-                                ? 'Local Order' 
-                                : 'Cannot Cancel'
-                          }
+                          {orderStatus === 'CANCELLED'
+                            ? 'Cancelled'
+                            : orderStatus === 'DELIVERED'
+                              ? 'Delivered'
+                              : !order.id
+                                ? 'Local Order'
+                                : 'Cannot Cancel'}
                         </span>
                       )}
                     </td>
